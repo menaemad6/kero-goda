@@ -458,7 +458,7 @@ def create_assignment(request):
 
 
         # Qr Generation 
-        url = 'http://127.0.0.1:8000/ar/lecture/' + str(lecture.id) + '/assignment/' + str(new_assignment.part_id)
+        url = 'https://www.kero-goda.online/en/lecture/' + str(lecture.id) + '/assignment/' + str(new_assignment.part_id)
         qr = qrcode.make(url)
         qr.save('media/qr-codes/' + str(new_assignment.assignment_id) + '.png')
 
