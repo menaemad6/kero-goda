@@ -279,7 +279,7 @@ def signup(request):
 
 
                     # Qr Generation 
-                    url = 'http://127.0.0.1:8000/en/profile/' + str(new_profile.username)
+                    url = 'https://www.kero-goda.online/en/profile/' + str(new_profile.username)
                     qr = qrcode.make(url)
                     qr.save('media/qr-codes/' + str(new_profile.username) + str(new_profile.code) + '.png')
                     new_profile.qr_code= 'qr-codes/' + str(new_profile.username) + str(new_profile.code) + '.png'
