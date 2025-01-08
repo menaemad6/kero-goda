@@ -326,7 +326,7 @@ def dashboard_groups(request ):
 
     
         # Qr Generation 
-        url = 'http://127.0.0.1:8000/ar/group/join/' + str(create_group.link) + '?method=qr_code&page=view'
+        url = 'https://www.kero-goda.online/en/group/join/' + str(create_group.link) + '?method=qr_code&page=view'
         qr = qrcode.make(url)
         qr.save('media/qr-codes/' + str(create_group.link) + '.png')
         # 'qr_code': 'static/qrcode.png'
@@ -644,7 +644,7 @@ def dashboard_chapters(request ):
 
     
         # Qr Generation 
-        url = 'http://127.0.0.1:8000/ar/chapter/join/' + str(create_chapter.link) + '?method=qr_code&page=view'
+        url = 'https://www.kero-goda.online/en/chapter/join/' + str(create_chapter.link) + '?method=qr_code&page=view'
         qr = qrcode.make(url)
         qr.save('media/qr-codes/' + str(create_chapter.link) + '.png')
         # 'qr_code': 'static/qrcode.png'
@@ -3077,7 +3077,7 @@ def create_lecture_Code(request):
         # Code Generation 
 
         # Qr Generation 
-        url = 'http://127.0.0.1:8000/ar/lecture/' + str(lecture_id) + '/join/' + str(pwd)
+        url = 'https://www.kero-goda.online/en/lecture/' + str(lecture_id) + '/join/' + str(pwd)
         qr = qrcode.make(url)
         qr.save('media/qr-codes/' + str(pwd) + '.png')
 
