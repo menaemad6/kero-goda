@@ -510,6 +510,8 @@ def assignment_functions(request):
         if Assignment.objects.filter(assignment_id=assignment_id).first():
             assignment = Assignment.objects.get(assignment_id=assignment_id)
             assignment_questions = Question.objects.filter(assignment_id=assignment.assignment_id)
+            assignment.questions_count_refreshed = assignment_questions.count()
+            assignment.save()
             # assignment_part =
         else:
             return redirect('/lectures')
@@ -631,24 +633,48 @@ def assignment_functions(request):
 
             if user_profile.instructor == True:
 
-                question_number = assignment.questions_count + 1
+                isPreMade = str(request.POST.get('isPreMade'))
 
-                if len(str(request.POST.get('q_a1'))) != 0:
+
+
+
+
+                question_number = assignment.questions_count_refreshed + 1
+
+
+
+                if isPreMade == 'True':
+
                     question_type = 'q_choices'
-                    question = request.POST.get('question')
+                    question = request.POST.get('question-mcq')
 
-                if len(str(request.POST.get('question-writing'))) != 0:
-                    question_type = 'writing'
-                    question = request.POST.get('question-writing')
+                else:
+                    if len(str(request.POST.get('q_a1'))) != 0:
+                        question_type = 'q_choices'
+                        question = request.POST.get('question')
+                    else:
+                        question_type = 'writing'
+                        question = request.POST.get('question-writing')
+
+
 
 
 
                 if str(question_type) == 'q_choices':
                     question_true = request.POST.get('true')
-                    question_answer1 = request.POST.get('q_a1')
-                    question_answer2 = request.POST.get('q_a2')
-                    question_answer3 = request.POST.get('q_a3')
-                    question_answer4 = request.POST.get('q_a4')
+
+                    if isPreMade == 'False':
+                        question_answer1 = request.POST.get('q_a1')
+                        question_answer2 = request.POST.get('q_a2')
+                        question_answer3 = request.POST.get('q_a3')
+                        question_answer4 = request.POST.get('q_a4')
+                    else:
+                        question_answer1 = 'a'
+                        question_answer2 = 'b'
+                        question_answer3 = 'c'
+                        question_answer4 = 'd'
+
+
                 else:
                     if str(question_type) == 'writing':
                         question_true = ''

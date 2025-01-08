@@ -1031,7 +1031,7 @@ class Question(models.Model):
 
 
 
-    question = models.CharField(max_length=100 , blank=True)
+    question = models.CharField(max_length=100 , blank=True , null=True)
     question_image = models.ImageField(upload_to='questions-images' , blank=True , null=True)
     true = models.CharField(max_length=100 , blank=True)
     answer1 = models.CharField(max_length=100 , blank=True)

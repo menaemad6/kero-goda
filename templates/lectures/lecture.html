@@ -1134,7 +1134,6 @@
                     Settings
                     {% endif %}
                   </button>
-
                   {% endif %}
 
                   {% if status == 'purchased' %}
@@ -1145,8 +1144,47 @@
                     You Purchased This Lecture
                     {% endif %}
                   </button>
-
                   {% endif %}
+
+
+
+                  {% if lecture.price == 0 %}
+
+
+                  {% if status == 'not-purchased' %}
+                  <!-- Confirm Purchase Normal  -->
+                  <form action="/purchase-lecture" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+
+                    <button type="submit" class="btn btn-success w-100">
+                      {% if LANGUAGE_CODE == 'ar' %}
+                      اشتري مجانا
+                      {% else %}
+                      Purchase For Free
+                      {% endif %}
+                    </button>
+
+
+                  </form>
+                  <!-- Confirm Purchase Normal  -->
+                  {% endif%}
+
+                  {% if status == 'not-logged' %}
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#error-login"
+                    class="btn btn-success w-100">
+                    {% if LANGUAGE_CODE == 'ar' %}
+                    اشتري مجانا
+                    {% else %}
+                    Purchase For Free
+                    {% endif %}
+                  </button>
+                  {% endif %}
+
+
+                  {% else %}
+
 
                   {% if status == 'not-purchased' %}
                   <button type="button" data-bs-toggle="modal" data-bs-target="#purchase" class="btn btn-primary w-100">
@@ -1156,7 +1194,6 @@
                     Purchase
                     {% endif %}
                   </button>
-
                   {% endif %}
 
                   {% if status == 'not-logged' %}
@@ -1168,6 +1205,7 @@
                     Purchase
                     {% endif %}
                   </button>
+                  {% endif %}
 
                   {% endif %}
 
@@ -1785,11 +1823,20 @@
               <!-- Assignment Info  -->
               <div class="col-12 col-md-8">
                 <div class="card" style="padding: 0;">
-                  <div class="card-header" style="display: flex; width: 100 ; justify-content: center;">
-                    <button class="btn btn-primary btn-lg">
-                      {{part.title}}
-                    </button>
+
+
+
+                  <div class="card-header" style="display: flex; width: 100%; justify-content: center;">
+                    <div class="card-header d-flex align-items-center justify-content-center"
+                      style="padding-top: 20px; padding-bottom: 20px;">
+                      <div class="video-title-container">
+                        <i class="fas fa-file video-title-i" style="padding: 15px;"></i>
+                        <h1 class="video-title-h1">{{part.title}}</h1>
+                      </div>
+                    </div>
                   </div>
+
+
                   <div class="card-body" style="display: flex; width: 100%; flex-direction: column;">
 
                     <div class="assignment-object"
@@ -1840,23 +1887,23 @@
 
 
                     <div class="assignment-object"
-                    style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
-                    <div class="d-flex align-items-center">
-                      <i class="fa-solid fa-user-group text-primary" style="font-size: 20px;"></i>
-                      <div style="margin-left: 10px;">
-                        {% if LANGUAGE_CODE == 'ar' %}
-                        المتقدمون
-                        {% else %}
-                        Applicants
-                        {% endif %}
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-user-group text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">
+                          {% if LANGUAGE_CODE == 'ar' %}
+                          المتقدمون
+                          {% else %}
+                          Applicants
+                          {% endif %}
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>
+                          {{applicants|length}}
+                        </div>
                       </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                      <div>
-                        {{applicants|length}}
-                      </div>
-                    </div>
-                  </div>
 
 
 
@@ -1923,6 +1970,29 @@
                       </button>
                     </li>
 
+
+                    <li class="d-flex mb-4 pb-1">
+                      <button data-bs-target="#new-question-modal-mcq" type="button" data-bs-toggle="modal"
+                        style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                        <div class="avatar flex-shrink-0 me-3">
+                          <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                            <i class="fa-solid fa-bars text-primary" style="font-size: 20px;"></i>
+                          </div>
+                        </div>
+                        <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                          <div class="me-2">
+                            <h6 class="mb-0">
+                              {% if LANGUAGE_CODE == 'ar' %}
+                              MCQإضافة سؤال
+                              {% else %}
+                              Add MCQ Question
+                              {% endif %}
+                            </h6>
+                          </div>
+                        </div>
+                      </button>
+                    </li>
+
                     <li class="d-flex pb-3">
                       <a href="{% url 'lecture' lecture.id %}"
                         style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
@@ -1945,6 +2015,9 @@
                       </a>
                     </li>
 
+
+
+                    <!-- Add Questions Modals  -->
                     <div class="modal fade" id="new-question-modal" tabindex="-1" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
@@ -1965,6 +2038,7 @@
                                 enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input type="hidden" hidden name="function-type" value="add-question">
+                                <input type="hidden" hidden name="isPreMade" value="False">
                                 <input type="hidden" hidden name="assignment-id" value="{{assignment.assignment_id}}">
                                 <input type="hidden" hidden name="lecture-id" value="{{lecture.id}}">
                                 <input type="hidden" hidden name="part-id" value="{{part.part_id}}">
@@ -2152,6 +2226,8 @@
                                 </div>
 
                                 <hr class="dropdown-divider mt-3" />
+
+
                                 <!-- Question Image -->
                                 <div class="col-12 mb-2"
                                   style="display: flex; justify-content: center; align-items: center;">
@@ -2169,6 +2245,184 @@
                                   </label>
                                   <input type="file" name="question-image-upload" id="image-upload" accept="image/*"
                                     onchange="displayImage(event)" class="form-control group-image-input">
+                                </div>
+                                <!-- Question Image -->
+
+
+
+                                <hr class="dropdown-divider mt-3" />
+
+                                <div class="col-12 mt-3">
+                                  <button type="submit" class="btn btn-success w-100">
+                                    {% if LANGUAGE_CODE == 'ar' %}
+                                    حفظ
+                                    {% else %}
+                                    Save
+                                    {% endif %}
+                                  </button>
+                                </div>
+
+                              </form>
+
+
+
+
+
+                            </div>
+                          </div>
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                              {% if LANGUAGE_CODE == 'ar' %}
+                              إغلاق
+                              {% else %}
+                              Close
+                              {% endif %}
+                            </button>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+                    <div class="modal fade" id="new-question-modal-mcq" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modalCenterTitle">
+                              {% if LANGUAGE_CODE == 'ar' %}
+                              إضافة سؤال جديد إلى {{assignment.assignment_name}}
+                              {% else %}
+                              Add New Question To {{assignment.assignment_name}}
+                              {% endif %}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+
+                          <div class="modal-body">
+                            <div class="row">
+                              <form action="/assignment-functions" method="POST" class="w-100"
+                                enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" hidden name="function-type" value="add-question">
+                                <input type="hidden" hidden name="isPreMade" value="True">
+                                <input type="hidden" hidden name="assignment-id" value="{{assignment.assignment_id}}">
+                                <input type="hidden" hidden name="lecture-id" value="{{lecture.id}}">
+                                <input type="hidden" hidden name="part-id" value="{{part.part_id}}">
+
+                                <div class="nav-align-top mb-4">
+
+                                  <div class="tab-content"
+                                    style="background-color: transparent; box-shadow: none; padding: 0;">
+
+                                    <div class="tab-pane fade show active" id="choices-question" role="tabpanel">
+
+
+                                      <div class="col-12 mt-3">
+                                        <label for="question" class="form-label">
+                                          {% if LANGUAGE_CODE == 'ar' %}
+                                          السؤال
+                                          {% else %}
+                                          Question
+                                          {% endif %}
+                                        </label>
+                                        <input type="text" id="question" name="question-mcq" class="form-control"
+                                          placeholder="{% if LANGUAGE_CODE == 'ar' %}أدخل السؤال{% else %}Enter The Question{% endif %}"
+                                          autocomplete="off" />
+                                      </div>
+
+
+
+                                      <hr class="dropdown-divider mt-3" />
+
+
+
+
+
+
+
+
+
+
+                                      <div class="col-12 mt-3">
+                                        <label for="choices" class="form-label">
+                                          {% if LANGUAGE_CODE == 'ar' %}
+                                          الإجابة الصحيحة
+                                          {% else %}
+                                          True Answer
+                                          {% endif %}
+                                        </label>
+
+
+                                        <select id="choices" class="form-select" name="true">
+                                          <option value="a" selected>
+                                            {% if LANGUAGE_CODE == 'ar' %}
+                                            ا
+                                            {% else %}
+                                            A
+                                            {% endif %}
+                                          </option>
+                                          <option value="b">
+                                            {% if LANGUAGE_CODE == 'ar' %}
+                                            ب
+                                            {% else %}
+                                            B
+                                            {% endif %}
+                                          </option>
+                                          <option value="c">
+                                            {% if LANGUAGE_CODE == 'ar' %}
+                                            ج
+                                            {% else %}
+                                            C
+                                            {% endif %}
+                                          </option>
+                                          <option value="d">
+                                            {% if LANGUAGE_CODE == 'ar' %}
+                                            د
+                                            {% else %}
+                                            D
+                                            {% endif %}
+                                          </option>
+                                        </select>
+
+
+                                        <!-- <input type="text" id="true" name="true" class="form-control"
+                                          placeholder="{% if LANGUAGE_CODE == 'ar' %}أدخل الإجابة الصحيحة{% else %}Choose The True Answer{% endif %}"
+                                          autocomplete="off" /> -->
+                                      </div>
+
+                                    </div>
+
+
+
+
+
+
+
+                                  </div>
+                                </div>
+
+                                <!-- <hr class="dropdown-divider mt-3" /> -->
+                                <!-- Question Image -->
+                                <div class="col-12 mb-2"
+                                  style="display: flex; justify-content: center; align-items: center;">
+                                  <img src="" id="uploaded-image-MCQ" class="group-image rounded" alt=""
+                                    style="width: fit-content; max-width: 100%;">
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                  <label for="image-upload" class="form-label">
+                                    {% if LANGUAGE_CODE == 'ar' %}
+                                    صورة السؤال (غير مطلوب)
+                                    {% else %}
+                                    Question Image (Not Required)
+                                    {% endif %}
+                                  </label>
+                                  <input type="file" name="question-image-upload" id="image-upload" accept="image/*"
+                                    onchange="displayImageForMCQQuestion(event)" class="form-control group-image-input">
                                 </div>
                                 <!-- Question Image -->
                                 <hr class="dropdown-divider mt-3" />
@@ -2205,6 +2459,7 @@
                         </div>
                       </div>
                     </div>
+                    <!-- Add Questions Modals  -->
 
                   </div>
                 </div>
@@ -3320,11 +3575,18 @@
               <!-- Assignment Start -->
               <div class="col-12 col-md-8">
                 <div class="card" style="padding: 0;">
-                  <div class="card-header" style="display: flex; width: 100 ; justify-content: center;">
-                    <button class="btn btn-primary btn-lg">
-                      {{part.title}}
-                    </button>
+
+                  <div class="card-header" style="display: flex; width: 100%; justify-content: center;">
+                    <div class="card-header d-flex align-items-center justify-content-center"
+                      style="padding-top: 20px; padding-bottom: 20px;">
+                      <div class="video-title-container">
+                        <i class="fas fa-file video-title-i" style="padding: 15px;"></i>
+                        <h1 class="video-title-h1">{{part.title}}</h1>
+                      </div>
+                    </div>
                   </div>
+
+
                   <div class="card-body" style="display: flex; width: 100%; flex-direction: column;">
 
                     <div class="assignment-object"
@@ -3427,10 +3689,16 @@
               <!-- Assignment Submitted -->
               <div class="col-12 col-md-8">
                 <div class="card" style="padding: 0;">
-                  <div class="card-header" style="display: flex; width: 100 ; justify-content: center;">
-                    <button class="btn btn-primary btn-lg">
-                      {{part.title}}
-                    </button>
+
+
+                  <div class="card-header" style="display: flex; width: 100%; justify-content: center;">
+                    <div class="card-header d-flex align-items-center justify-content-center"
+                      style="padding-top: 20px; padding-bottom: 20px;">
+                      <div class="video-title-container">
+                        <i class="fas fa-file video-title-i" style="padding: 15px;"></i>
+                        <h1 class="video-title-h1">{{part.title}}</h1>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="card-header percentage" style="display: flex; width: 100 ; justify-content: center;">
@@ -4098,12 +4366,20 @@
 
                     <div class="col-12 col-md-8">
                       <div class="card" style="padding: 0;">
+
+
                         <div class="card-header"
                           style="display: flex; justify-content: center; width: 100%; flex-direction: column;">
-                          <div style="width: 100%; display: flex; justify-content: center;" class="mb-3">
-                            <button class="btn btn-primary btn-lg">
-                              {{part.title}}
-                            </button>
+
+
+                          <div class="card-header" style="display: flex; width: 100%; justify-content: center;">
+                            <div class="card-header d-flex align-items-center justify-content-center"
+                              style="padding-top: 20px; padding-bottom: 20px;">
+                              <div class="video-title-container">
+                                <i class="fas fa-file video-title-i" style="padding: 15px;"></i>
+                                <h1 class="video-title-h1">{{part.title}}</h1>
+                              </div>
+                            </div>
                           </div>
 
                           <div style="width: 100%; display: flex; justify-content: center;" class="mb-3">
@@ -4900,6 +5176,8 @@
                         {% endif %}
                       </button>
                     </form>
+
+
                   </div>
                 </div>
               </div>
@@ -5740,13 +6018,15 @@
                   </div>
                   <div class="modal-body">
                     <div class="row">
+
+
                       <div class="col-12">
                         <!-- Search -->
                         <div class="d-flex align-items-center" style="width: 100%;">
                           <i class="bx bx-search fs-4 lh-0"></i>
-                          <input type="text" class="form-control border-0 shadow-none" id="group-students-filter-input"
+                          <input type="text" class="form-control border-0 shadow-none" id="subscribed-students-filter"
                             placeholder="{% if LANGUAGE_CODE == 'ar' %}ابحث...{% else %}Search...{% endif %}"
-                            style="width: 100%;" oninput="groupStudentsFilterText()" />
+                            style="width: 100%;" />
                         </div>
                         <!-- /Search -->
                       </div>
@@ -5755,7 +6035,7 @@
 
                       <div class="filter-blocks-container">
                         {% for x in subscribed_students %}
-                        <div class="filter-block mt-2" style="display: flex;">
+                        <div class="filter-block mt-2 subscribed-student-card" data-subscribed-student="{{x.user_name}}" style="display: flex;">
                           <div class="avatar flex-shrink-0 me-3">
                             <div class="">
                               {% if x.user_image %}
@@ -5790,6 +6070,8 @@
                         </div>
                         {% endfor %}
                       </div>
+
+
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -5804,6 +6086,29 @@
                 </div>
               </div>
             </div>
+
+            <script>
+              document.getElementById('subscribed-students-filter').addEventListener('input', function (e) {
+
+                const searchValue = e.target.value.toLowerCase(); // Get the search input and convert it to lowercase
+
+             
+                const subscribedStudentCards = document.querySelectorAll('.subscribed-student-card'); // Select all student cards
+                console.log(subscribedStudentCards)
+
+                subscribedStudentCards.forEach((card) => {
+                  const subscribedStudentName = card.getAttribute('data-subscribed-student').toLowerCase();
+
+                  console.log(`${subscribedStudentName ? subscribedStudentName : 'None'} Student`)
+
+                  if (subscribedStudentName.includes(searchValue)) {
+                    card.style.display = 'flex'; // Show the card if it matches the search
+                  } else {
+                    card.style.display = 'none'; // Hide the card if it doesn't match
+                  }
+                });
+              });
+            </script>
 
             <!-- Lecture Students  -->
 
@@ -5855,9 +6160,9 @@
                         <!-- Search -->
                         <div class="d-flex align-items-center" style=" width: 100%;">
                           <i class="bx bx-search fs-4 lh-0"></i>
-                          <input type="text" class="form-control border-0 shadow-none" id="add-student-filter-input"
+                          <input type="text" class="form-control border-0 shadow-none" id="add-students-filter"
                             placeholder="{% if LANGUAGE_CODE == 'ar' %}بحث...{% else %}Search...{% endif %}"
-                            style="width: 100%;" oninput="addStudentFilterText()" />
+                            style="width: 100%;" />
                         </div>
                         <!-- /Search -->
                       </div>
@@ -5867,7 +6172,7 @@
                       <div class="filter-blocks-container">
 
                         {% for x in not_subscribed_students %}
-                        <div class="filter-block-add-student mt-2" style="display: flex;">
+                        <div class="filter-block-add-student mt-2 add-student-card" data-add-student="{{x.name}}" style="display: flex;">
                           <div class="avatar flex-shrink-0 me-3">
                             <div class="">
                               {% if x.image %}
@@ -5924,6 +6229,26 @@
                 </div>
               </div>
             </div>
+
+            <script>
+              document.getElementById('add-students-filter').addEventListener('input', function (e) {
+
+                const searchValueAddStudent = e.target.value.toLowerCase(); // Get the search input and convert it to lowercase
+
+             
+                const addStudentCards = document.querySelectorAll('.add-student-card'); // Select all student cards
+
+                addStudentCards.forEach((card) => {
+                  const addStudentName = card.getAttribute('data-add-student').toLowerCase();
+
+                  if (addStudentName.includes(searchValueAddStudent)) {
+                    card.style.display = 'flex'; // Show the card if it matches the search
+                  } else {
+                    card.style.display = 'none'; // Hide the card if it doesn't match
+                  }
+                });
+              });
+            </script>
 
             <!-- Add Student  -->
 
@@ -10322,6 +10647,14 @@
     var image = document.getElementById('uploaded-image');
     image.src = URL.createObjectURL(event.target.files[0]);
     image.style.display = 'block';
+  }
+</script>
+
+<script>
+  function displayImageForMCQQuestion(event) {
+    var MCQimage = document.getElementById('uploaded-image-MCQ');
+    MCQimage.src = URL.createObjectURL(event.target.files[0]);
+    MCQimage.style.display = 'block';
   }
 </script>
 
