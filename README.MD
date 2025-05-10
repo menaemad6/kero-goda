@@ -245,28 +245,6 @@ python manage.py runserver
 - Open your browser and navigate to `http://127.0.0.1:8000/`
 - Admin panel: `http://127.0.0.1:8000/admin/`
 
-## 📱 Mobile Responsiveness
-
-EduPlat is designed to work seamlessly across all devices:
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <img src="https://placehold.co/250x500/092E20/FFFFFF/png?text=Mobile+View" alt="Mobile View" width="180"/>
-        <br/>Mobile View
-      </td>
-      <td align="center">
-        <img src="https://placehold.co/350x500/092E20/FFFFFF/png?text=Tablet+View" alt="Tablet View" width="250"/>
-        <br/>Tablet View
-      </td>
-      <td align="center">
-        <img src="https://placehold.co/600x400/092E20/FFFFFF/png?text=Desktop+View" alt="Desktop View" width="400"/>
-        <br/>Desktop View
-      </td>
-    </tr>
-  </table>
-</div>
 
 ## 🌐 Localization
 
